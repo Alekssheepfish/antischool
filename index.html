@@ -34,8 +34,8 @@
     }
     .step-card.active-card {
       border-color: #4f46e5 !important;
-      background-color: #f8faff;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+      background-color: #f8faff !important;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
     }
     .badge-chip {
       cursor: pointer;
@@ -58,11 +58,11 @@
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased min-h-screen lg:h-screen lg:overflow-hidden flex flex-col">
+<body class="bg-slate-50 text-slate-900 antialiased min-h-screen pb-16 custom-scrollbar">
 
-  <!-- TOP APP BAR / CONTROL CENTER (ALWAYS PINNED) -->
-  <header class="shrink-0 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5">
+  <!-- TOP APP BAR / CONTROL CENTER (STICKY) -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-2.5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         
         <!-- Logo & Title -->
@@ -83,17 +83,17 @@
           </div>
         </div>
 
-        <!-- Personalization Bar (Live inputs) -->
-        <div class="flex flex-wrap items-center gap-2 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
-          <div class="flex items-center gap-1.5 px-1.5">
+        <!-- Personalization Bar (Live inputs that inject into script) -->
+        <div class="flex flex-wrap items-center gap-2 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs">
+          <div class="flex items-center gap-1 px-1.5">
             <span class="text-slate-500 font-medium">Студент:</span>
             <input type="text" id="studentNameInput" value="Олександр" placeholder="Ім'я студента" class="bg-white px-2 py-0.5 rounded-md border border-slate-200 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 w-28 text-xs">
           </div>
-          <div class="flex items-center gap-1.5 px-1.5">
+          <div class="flex items-center gap-1 px-1.5">
             <span class="text-slate-500 font-medium">Менеджер:</span>
             <input type="text" id="managerNameInput" value="Олена" placeholder="Ваше ім'я" class="bg-white px-2 py-0.5 rounded-md border border-slate-200 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 w-24 text-xs">
           </div>
-          <div class="flex items-center gap-1.5 px-1.5">
+          <div class="flex items-center gap-1 px-1.5">
             <span class="text-slate-500 font-medium">Рівень:</span>
             <select id="studentLevelInput" class="bg-white px-2 py-0.5 rounded-md border border-slate-200 text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs">
               <option value="B1">B1 (Носій)</option>
@@ -105,7 +105,7 @@
           </div>
         </div>
 
-        <!-- Call Timer & Quick Buttons -->
+        <!-- Call Timer & Controls -->
         <div class="flex items-center gap-2">
           <!-- Timer -->
           <div class="flex items-center gap-2 bg-slate-900 text-white px-3 py-1 rounded-xl text-xs font-mono shadow-sm">
@@ -119,7 +119,7 @@
             </button>
           </div>
 
-          <!-- Failed Call / Matrix trigger -->
+          <!-- Failed Call / Script trigger -->
           <button onclick="openNotReachedModal()" class="px-2.5 py-1 text-xs font-semibold rounded-xl bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.166a1 1 0 111.414 1.414"/></svg>
             <span class="hidden sm:inline">Не дозвонився?</span>
@@ -128,7 +128,7 @@
 
       </div>
 
-      <!-- Quick Route Stepper (1 -> 8) -->
+      <!-- Quick Route Bar (Breadcrumbs Stepper) -->
       <div class="mt-2 pt-2 border-t border-slate-100 flex items-center gap-1 overflow-x-auto text-xs py-0.5 custom-scrollbar">
         <span class="font-bold text-slate-400 uppercase tracking-wider text-[10px] mr-1 shrink-0 flex items-center gap-1">
           Маршрут:
@@ -140,289 +140,304 @@
     </div>
   </header>
 
-  <!-- MAIN APP WORKSPACE (DUAL-PANE INDEPENDENT SCROLL) -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-3 flex flex-col min-h-0">
+  <!-- MAIN WORKSPACE CONTAINER -->
+  <main class="max-w-[1600px] mx-auto px-4 sm:px-6 pt-4 relative">
     
-    <!-- Top Mandatory Call Note -->
-    <div class="shrink-0 mb-3 bg-gradient-to-r from-indigo-50/90 via-purple-50/80 to-pink-50/90 border border-indigo-100 rounded-xl px-3.5 py-2 flex items-center justify-between gap-2 shadow-2xs">
-      <div class="flex items-center gap-2.5">
-        <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">★</span>
+    <!-- Top Mandatory Alert Banner -->
+    <div class="mb-4 bg-gradient-to-r from-indigo-50/90 via-purple-50/80 to-pink-50/90 border border-indigo-100 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3 shadow-2xs lg:w-[calc(100%-460px)] xl:w-[calc(100%-490px)]">
+      <div class="flex items-center gap-3">
+        <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shrink-0">★</span>
         <p class="text-xs font-semibold text-slate-800">
-          <strong class="text-indigo-900">ПРИЙОМ У ВІДДІЛ — ОБОВ'ЯЗКОВО ДЗВІНКОМ:</strong> налагодити теплий контакт, зрозуміти тон спілкування та сформувати довіру.
+          <strong class="text-indigo-900">ПРИЙОМ У ВІДДІЛ — ОБОВ'ЯЗКОВО ДЗВІНКОМ:</strong> налагодити теплий контакт, зрозуміти тон спілкування та сформувати довіру до сервісу.
         </p>
       </div>
-      <span class="text-[11px] text-indigo-700 font-semibold bg-white/80 px-2 py-0.5 rounded-md border border-indigo-200 hidden md:inline">
-        Суфлер праворуч завжди на екрані ↘
+      <span class="text-xs text-indigo-700 font-bold bg-white/90 px-2.5 py-1 rounded-lg border border-indigo-200 hidden md:inline shrink-0">
+        Суфлер праворуч зафіксований ↘
       </span>
     </div>
 
-    <!-- 2-COLUMN SPLIT GRID -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 min-h-0">
+    <!-- CONTENT WRAPPER: LEFT MAP CARDS + RIGHT PINNED PROMPTER -->
+    <div class="relative">
       
-      <!-- LEFT COLUMN: ROADMAP CARDS 1-8 (SCROLLABLE INDEPENDENTLY) -->
-      <div class="lg:col-span-7 flex flex-col min-h-0 lg:overflow-y-auto custom-scrollbar pr-2 space-y-3 pb-8">
+      <!-- ========================================== -->
+      <!-- LEFT AREA: 8 FULL SPACIOUS ROADMAP CARDS   -->
+      <!-- ========================================== -->
+      <div class="w-full lg:w-[calc(100%-460px)] xl:w-[calc(100%-490px)] space-y-4">
         
-        <!-- STEP 1: ПРИВІТАННЯ -->
-        <div id="stepCard-1" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-3.5 cursor-pointer relative overflow-hidden" onclick="selectStep(1)">
-          <div class="flex items-center justify-between mb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center">1</span>
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm">ПРИВІТАННЯ ТА ЗНАЙОМСТВО</h3>
-            </div>
-            <span class="text-[11px] text-slate-400 font-medium">Запитуємо, чи зручно</span>
-          </div>
-          <p class="text-xs text-slate-600 mb-2.5">Представляємось, перевіряємо можливість говорити і пояснюємо роль куратора.</p>
+        <!-- 2-COLUMN GRID OF CARDS (Easy to see and scan!) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <!-- Sub-branch: Не зручно -->
-            <div onclick="event.stopPropagation(); setGreetingBranch('not_convenient')" id="subBranch-not_convenient" class="badge-chip p-2 rounded-xl border border-rose-200 bg-rose-50/70 hover:bg-rose-100/70 transition">
-              <div class="flex items-center gap-1 font-bold text-rose-700 mb-0.5 text-xs">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                НЕ ЗРУЧНО
+          <!-- STEP 1: ПРИВІТАННЯ -->
+          <div id="stepCard-1" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-4 cursor-pointer relative overflow-hidden shadow-xs" onclick="selectStep(1)">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center">1</span>
+                <h3 class="font-bold text-slate-900 text-sm">ПРИВІТАННЯ ТА ЗНАЙОМСТВО</h3>
               </div>
-              <p class="text-rose-600 text-[11px] leading-tight">Домовляємось про інший час повторного дзвінка.</p>
+              <span class="text-xs text-slate-400 font-medium">Запитуємо, чи зручно</span>
             </div>
-            <!-- Sub-branch: Зручно -->
-            <div onclick="event.stopPropagation(); setGreetingBranch('convenient')" id="subBranch-convenient" class="badge-chip p-2 rounded-xl border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100/70 transition">
-              <div class="flex items-center gap-1 font-bold text-emerald-700 mb-0.5 text-xs">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                ЗРУЧНО
+            <p class="text-xs text-slate-600 mb-3">Представляємось, уточнюємо можливість говорити та пояснюємо роль куратора.</p>
+            
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <!-- Sub-branch: Не зручно -->
+              <div onclick="event.stopPropagation(); setGreetingBranch('not_convenient')" id="subBranch-not_convenient" class="badge-chip p-2.5 rounded-xl border border-rose-200 bg-rose-50/70 hover:bg-rose-100/70 transition">
+                <div class="flex items-center gap-1 font-bold text-rose-700 mb-0.5 text-xs">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                  НЕ ЗРУЧНО
+                </div>
+                <p class="text-rose-600 text-[11px] leading-tight">Домовляємось про інший час повторного дзвінка.</p>
               </div>
-              <p class="text-emerald-700 text-[11px] leading-tight">Пояснюємо персональний супровід і постійний зв'язок.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 2: АНКЕТА І ГРАФІК -->
-        <div id="stepCard-2" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-3.5 cursor-pointer relative overflow-hidden" onclick="selectStep(2)">
-          <div class="flex items-center justify-between mb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-sky-600 text-white font-bold text-xs flex items-center justify-center">2</span>
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm">АНКЕТА І ГРАФІК ЗАНЯТЬ</h3>
-            </div>
-            <span class="text-[11px] text-sky-600 font-semibold bg-sky-50 px-2 py-0.5 rounded-md">Звірка даних</span>
-          </div>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <!-- Анкета є -->
-            <div onclick="event.stopPropagation(); setScheduleBranch('has_form')" id="subBranch-has_form" class="badge-chip p-2 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/50">
-              <span class="font-bold text-emerald-800 flex items-center gap-1 mb-0.5">
-                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                АНКЕТА Є
-              </span>
-              <ul class="text-[11px] text-slate-600 space-y-0.5 list-disc list-inside">
-                <li>Дні занять та години</li>
-                <li>Інтенсивність та побажання</li>
-              </ul>
-            </div>
-            <!-- Анкети немає / неповна -->
-            <div onclick="event.stopPropagation(); setScheduleBranch('no_form')" id="subBranch-no_form" class="badge-chip p-2 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-100/50">
-              <span class="font-bold text-rose-800 flex items-center gap-1 mb-0.5">
-                <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                АНКЕТИ НЕМАЄ / НЕПОВНА
-              </span>
-              <p class="text-[11px] text-slate-600 mb-1">Узгоджуємо прямо на дзвінку:</p>
-              <div class="flex items-center gap-1 text-[10px] font-bold text-slate-700 bg-white p-1 rounded border border-rose-200 justify-around">
-                <span>дні</span>&rarr;<span>години</span>&rarr;<span>інтенсивність</span>&rarr;<span>побажання</span>
+              <!-- Sub-branch: Зручно -->
+              <div onclick="event.stopPropagation(); setGreetingBranch('convenient')" id="subBranch-convenient" class="badge-chip p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100/70 transition">
+                <div class="flex items-center gap-1 font-bold text-emerald-700 mb-0.5 text-xs">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  ЗРУЧНО
+                </div>
+                <p class="text-emerald-700 text-[11px] leading-tight">Пояснюємо персональний супровід і постійний зв'язок.</p>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- STEP 3: ВИКЛАДАЧ (НОСІЙ МОВИ) -->
-        <div id="stepCard-3" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-3.5 cursor-pointer relative overflow-hidden" onclick="selectStep(3)">
-          <div class="flex items-center justify-between mb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center">3</span>
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm">ВИКЛАДАЧ ТА НОСІЙ МОВИ</h3>
+          <!-- STEP 2: АНКЕТА І ГРАФІК -->
+          <div id="stepCard-2" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-4 cursor-pointer relative overflow-hidden shadow-xs" onclick="selectStep(2)">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-sky-600 text-white font-bold text-xs flex items-center justify-center">2</span>
+                <h3 class="font-bold text-slate-900 text-sm">АНКЕТА І ГРАФІК ЗАНЯТЬ</h3>
+              </div>
+              <span class="text-xs text-sky-600 font-semibold bg-sky-50 px-2 py-0.5 rounded-md">Звірка даних</span>
             </div>
-            <span class="text-[11px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">Обов'язково для B1+</span>
+            <p class="text-xs text-slate-600 mb-3">Узгоджуємо дні, зручний час та інтенсивність занять.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <!-- Анкета є -->
+              <div onclick="event.stopPropagation(); setScheduleBranch('has_form')" id="subBranch-has_form" class="badge-chip p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/50">
+                <span class="font-bold text-emerald-800 flex items-center gap-1 mb-1">
+                  <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  АНКЕТА Є
+                </span>
+                <ul class="text-[11px] text-slate-600 space-y-0.5 list-disc list-inside">
+                  <li>Дні занять та час</li>
+                  <li>Інтенсивність та побажання</li>
+                </ul>
+              </div>
+              <!-- Анкети немає / неповна -->
+              <div onclick="event.stopPropagation(); setScheduleBranch('no_form')" id="subBranch-no_form" class="badge-chip p-2.5 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-100/50">
+                <span class="font-bold text-rose-800 flex items-center gap-1 mb-1">
+                  <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                  АНКЕТИ НЕМАЄ / НЕПОВНА
+                </span>
+                <p class="text-[11px] text-slate-600 mb-1">Узгоджуємо прямо на дзвінку:</p>
+                <div class="flex items-center gap-1 text-[10px] font-bold text-slate-700 bg-white p-1 rounded border border-rose-200 justify-around">
+                  <span>дні</span>&rarr;<span>години</span>&rarr;<span>інтенсивність</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <!-- Proposition B1+ -->
-            <div onclick="event.stopPropagation(); setTeacherBranch('b1_offer')" id="subBranch-b1_offer" class="badge-chip p-2 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100/70">
-              <span class="font-bold text-emerald-900 block mb-0.5">РІВЕНЬ B1 І ВИЩЕ &rarr; ПРОПОНУЄМО НОСІЯ</span>
-              <ul class="text-[11px] text-emerald-800 space-y-0.5">
-                <li>&bull; <strong>Найкращий результат</strong> для рівня</li>
-                <li>&bull; <strong>Без доплат</strong> у межах пакета</li>
-                <li>&bull; <strong>Позачерговий підбір</strong> у CRM!</li>
-              </ul>
+          <!-- STEP 3: ВИКЛАДАЧ (НОСІЙ МОВИ) -->
+          <div id="stepCard-3" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-4 cursor-pointer relative overflow-hidden shadow-xs" onclick="selectStep(3)">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center">3</span>
+                <h3 class="font-bold text-slate-900 text-sm">ВИКЛАДАЧ ТА НОСІЙ МОВИ</h3>
+              </div>
+              <span class="text-xs text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">Обов'язково для B1+</span>
             </div>
+            <p class="text-xs text-slate-600 mb-3">Пропонуємо носія мови або відпрацьовуємо сумніви з гарантією.</p>
 
-            <!-- Overcoming Objections -->
-            <div onclick="event.stopPropagation(); setTeacherBranch('worried')" id="subBranch-worried" class="badge-chip p-2 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100/70">
-              <span class="font-bold text-amber-900 flex items-center gap-1 mb-0.5">
-                <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                ХВИЛЮЄТЬСЯ / БОЇТЬСЯ?
-              </span>
-              <ul class="text-[11px] text-amber-800 space-y-0.5">
-                <li>&bull; Професіонали з високим рейтингом</li>
-                <li>&bull; Вбудований переклад слів</li>
-                <li>&bull; <strong class="underline">Не сподобається — урок не списується!</strong></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <!-- Proposition B1+ -->
+              <div onclick="event.stopPropagation(); setTeacherBranch('b1_offer')" id="subBranch-b1_offer" class="badge-chip p-2.5 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100/70">
+                <span class="font-bold text-emerald-900 block mb-1">РІВЕНЬ B1 І ВИЩЕ &rarr; ПРОПОНУЄМО НОСІЯ</span>
+                <ul class="text-[11px] text-emerald-800 space-y-0.5">
+                  <li>&bull; <strong>Найкращий результат</strong> для рівня</li>
+                  <li>&bull; <strong>Без доплат</strong> у межах пакета</li>
+                  <li>&bull; <strong>Позачерговий підбір</strong> у CRM!</li>
+                </ul>
+              </div>
 
-        <!-- STEP 4: ТЕРМІНИ ПІДБОРУ -->
-        <div id="stepCard-4" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-3.5 cursor-pointer relative overflow-hidden" onclick="selectStep(4)">
-          <div class="flex items-center justify-between mb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-amber-600 text-white font-bold text-xs flex items-center justify-center">4</span>
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm">ТЕРМІНИ ПІДБОРУ</h3>
-            </div>
-            <span class="text-[11px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">2 – 7 робочих днів</span>
-          </div>
-          <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-2 text-xs text-slate-700 flex items-start gap-2">
-            <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            <div>
-              <p class="font-medium text-slate-800">Підбір триває в середньому від 2 до 7 робочих днів.</p>
-              <p class="text-[11px] text-slate-600">Як тільки все буде готово — надішлемо в чаті дату першого заняття та контакти викладача.</p>
+              <!-- Overcoming Objections -->
+              <div onclick="event.stopPropagation(); setTeacherBranch('worried')" id="subBranch-worried" class="badge-chip p-2.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100/70">
+                <span class="font-bold text-amber-900 flex items-center gap-1 mb-1">
+                  <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  ХВИЛЮЄТЬСЯ / БОЇТЬСЯ?
+                </span>
+                <ul class="text-[11px] text-amber-800 space-y-0.5">
+                  <li>&bull; Професіонали з високим рейтингом</li>
+                  <li>&bull; Вбудований переклад слів</li>
+                  <li>&bull; <strong class="underline">Не сподобається — урок не списується!</strong></li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- STEP 5: ЧАТ-БОТ -->
-        <div id="stepCard-5" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-3.5 cursor-pointer relative overflow-hidden" onclick="selectStep(5)">
-          <div class="flex items-center justify-between mb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">5</span>
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm">ЧАТ-БОТ (ГОЛОВНИЙ КАНАЛ)</h3>
+          <!-- STEP 4: ТЕРМІНИ ПІДБОРУ -->
+          <div id="stepCard-4" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-4 cursor-pointer relative overflow-hidden shadow-xs" onclick="selectStep(4)">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-amber-600 text-white font-bold text-xs flex items-center justify-center">4</span>
+                <h3 class="font-bold text-slate-900 text-sm">ТЕРМІНИ ПІДБОРУ</h3>
+              </div>
+              <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">2 – 7 робочих днів</span>
             </div>
-            <span class="text-[11px] text-blue-600 font-semibold bg-blue-50 px-2 py-0.5 rounded-md">Telegram / Viber</span>
-          </div>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <div onclick="event.stopPropagation(); setBotBranch('bot_connected')" id="subBranch-bot_connected" class="badge-chip p-2 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100/60">
-              <span class="font-bold text-emerald-800 flex items-center gap-1 mb-0.5">
-                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                ПІДКЛЮЧЕНИЙ
-              </span>
-              <p class="text-[11px] text-slate-600">Пишіть туди — ми швидко відповідаємо. Після дзвінка надішлемо привітання.</p>
-            </div>
-            <div onclick="event.stopPropagation(); setBotBranch('bot_not_connected')" id="subBranch-bot_not_connected" class="badge-chip p-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100/60">
-              <span class="font-bold text-rose-800 flex items-center gap-1 mb-0.5">
-                <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                НЕ ПІДКЛЮЧЕНИЙ
-              </span>
-              <p class="text-[11px] text-slate-600">SMS &rarr; месенджер &rarr; e-mail. Підключаємо прямо на дзвінку!</p>
+            <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3 text-xs text-slate-700 flex items-start gap-2.5">
+              <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <div>
+                <p class="font-bold text-slate-800">Підбір триває в середньому від 2 до 7 робочих днів.</p>
+                <p class="text-[11px] text-slate-600 mt-1">Як тільки викладача буде закріплено — ми надішлемо вам у чат дату першого заняття та всі деталі.</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- STEP 6: ІНФОРМАЦІЯ ПРО СЕРВІС -->
-        <div id="stepCard-6" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-3.5 cursor-pointer relative overflow-hidden" onclick="selectStep(6)">
-          <div class="flex items-center justify-between mb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-orange-600 text-white font-bold text-xs flex items-center justify-center">6</span>
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm">ІНФОРМАЦІЯ ПРО СЕРВІС ТА ПРАВИЛА</h3>
+          <!-- STEP 5: ЧАТ-БОТ -->
+          <div id="stepCard-5" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-4 cursor-pointer relative overflow-hidden shadow-xs" onclick="selectStep(5)">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">5</span>
+                <h3 class="font-bold text-slate-900 text-sm">ЧАТ-БОТ (ГОЛОВНИЙ КАНАЛ)</h3>
+              </div>
+              <span class="text-xs text-blue-600 font-semibold bg-blue-50 px-2 py-0.5 rounded-md">Telegram / Viber</span>
             </div>
-            <span class="text-[11px] font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md">8 годин</span>
-          </div>
-          <div class="bg-orange-50/70 border border-orange-200 rounded-xl p-2.5 text-xs space-y-1">
-            <div class="flex items-center gap-2 font-semibold text-orange-900">
-              <svg class="w-4 h-4 text-orange-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <span>Скасування без списання: не пізніше ніж за 8 годин до уроку</span>
+            <p class="text-xs text-slate-600 mb-3">Перевіряємо статус підключення чат-бота або підключаємо на лінії.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div onclick="event.stopPropagation(); setBotBranch('bot_connected')" id="subBranch-bot_connected" class="badge-chip p-2.5 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100/60">
+                <span class="font-bold text-emerald-800 flex items-center gap-1 mb-1">
+                  <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  ПІДКЛЮЧЕНИЙ
+                </span>
+                <p class="text-[11px] text-slate-600">Пишіть туди — ми швидко відповідаємо. Після дзвінка надішлемо привітання.</p>
+              </div>
+              <div onclick="event.stopPropagation(); setBotBranch('bot_not_connected')" id="subBranch-bot_not_connected" class="badge-chip p-2.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100/60">
+                <span class="font-bold text-rose-800 flex items-center gap-1 mb-1">
+                  <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                  НЕ ПІДКЛЮЧЕНИЙ
+                </span>
+                <p class="text-[11px] text-slate-600 mb-1">Надсилаємо SMS &rarr; обирає месенджер &rarr; вводить e-mail.</p>
+                <span class="inline-block font-semibold text-rose-700 text-[10px]">&rarr; Підключаємо прямо на дзвінку!</span>
+              </div>
             </div>
-            <p class="text-[11px] text-slate-600 pl-6">Надішлемо інструкцію. Ми завжди на боці студента і готові допомогти.</p>
           </div>
-        </div>
 
-        <!-- STEP 7: ПИТАННЯ ТА ДОВІРА -->
-        <div id="stepCard-7" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-3.5 cursor-pointer relative overflow-hidden" onclick="selectStep(7)">
-          <div class="flex items-center justify-between mb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-purple-600 text-white font-bold text-xs flex items-center justify-center">7</span>
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm">ПИТАННЯ ТА ЗВОРОТНИЙ ЗВ'ЯЗОК</h3>
+          <!-- STEP 6: ІНФОРМАЦІЯ ПРО СЕРВІС -->
+          <div id="stepCard-6" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-4 cursor-pointer relative overflow-hidden shadow-xs" onclick="selectStep(6)">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-orange-600 text-white font-bold text-xs flex items-center justify-center">6</span>
+                <h3 class="font-bold text-slate-900 text-sm">ІНФОРМАЦІЯ ПРО СЕРВІС ТА ПРАВИЛА</h3>
+              </div>
+              <span class="text-xs font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md">8 годин</span>
             </div>
-            <span class="text-[11px] text-purple-700 font-semibold bg-purple-50 px-2 py-0.5 rounded-md">Довіра</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <div class="p-2 rounded-xl border border-purple-200 bg-purple-50/60">
-              <p class="font-semibold text-purple-900 text-[11px]">«Мені важливе ваше враження»</p>
-              <p class="text-[11px] text-slate-600">Зв'яжемося після першого уроку, щоб дізнатися як все пройшло.</p>
-            </div>
-            <div class="p-2 rounded-xl border border-slate-200 bg-slate-50">
-              <p class="font-semibold text-slate-800 text-[11px]">«Чи залишились у вас питання?»</p>
-              <p class="text-[11px] text-slate-600">Знімаємо будь-яку невпевненість перед стартом.</p>
+            <div class="bg-orange-50/70 border border-orange-200 rounded-xl p-3 text-xs space-y-1.5">
+              <div class="flex items-center gap-2 font-semibold text-orange-900">
+                <svg class="w-4 h-4 text-orange-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Скасування без списання: не пізніше ніж за 8 годин до початку уроку (в кабінеті)</span>
+              </div>
+              <p class="text-[11px] text-slate-600 pl-6">Надішлемо повну інструкцію. Ми завжди на боці студента і допоможемо у разі форс-мажорів.</p>
             </div>
           </div>
-        </div>
 
-        <!-- STEP 8: ЗАВЕРШЕННЯ РОЗМОВИ -->
-        <div id="stepCard-8" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-3.5 cursor-pointer relative overflow-hidden" onclick="selectStep(8)">
-          <div class="flex items-center justify-between mb-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-lg bg-teal-600 text-white font-bold text-xs flex items-center justify-center">8</span>
-              <h3 class="font-bold text-slate-900 text-xs sm:text-sm">ЗАВЕРШЕННЯ РОЗМОВИ</h3>
+          <!-- STEP 7: ПИТАННЯ ТА ДОВІРА -->
+          <div id="stepCard-7" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-4 cursor-pointer relative overflow-hidden shadow-xs" onclick="selectStep(7)">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-purple-600 text-white font-bold text-xs flex items-center justify-center">7</span>
+                <h3 class="font-bold text-slate-900 text-sm">ПИТАННЯ ТА ЗВОРОТНИЙ ЗВ'ЯЗОК</h3>
+              </div>
+              <span class="text-xs text-purple-700 font-semibold bg-purple-50 px-2 py-0.5 rounded-md">Довіра</span>
             </div>
-            <span class="text-[11px] font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md">Теплий фінал</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div class="p-2.5 rounded-xl border border-purple-200 bg-purple-50/60">
+                <p class="font-semibold text-purple-900 text-[11px]">«Мені важливе ваше враження»</p>
+                <p class="text-[11px] text-slate-600 mt-0.5">Обіцяємо зв'язатися після 1-го уроку, щоб дізнатися як все пройшло.</p>
+              </div>
+              <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                <p class="font-semibold text-slate-800 text-[11px]">«Чи залишились у вас питання?»</p>
+                <p class="text-[11px] text-slate-600 mt-0.5">Знімаємо будь-яку невпевненість перед стартом підбору.</p>
+              </div>
+            </div>
           </div>
-          <p class="text-xs text-slate-600">Дякуємо за розмову, бажаємо чудового дня і створюємо настрій комфортного навчання.</p>
+
+          <!-- STEP 8: ЗАВЕРШЕННЯ РОЗМОВИ -->
+          <div id="stepCard-8" class="step-card bg-white rounded-2xl border-2 border-slate-200 p-4 cursor-pointer relative overflow-hidden shadow-xs" onclick="selectStep(8)">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-teal-600 text-white font-bold text-xs flex items-center justify-center">8</span>
+                <h3 class="font-bold text-slate-900 text-sm">ЗАВЕРШЕННЯ РОЗМОВИ</h3>
+              </div>
+              <span class="text-xs font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md">Теплий фінал</span>
+            </div>
+            <p class="text-xs text-slate-600">Дякуємо за розмову, бажаємо чудового дня і створюємо настрій комфортного навчання.</p>
+          </div>
+
         </div>
 
         <!-- BOTTOM BAR: KEY PRINCIPLES (ГОЛОВНЕ) -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-amber-500 font-bold">★</span>
-            <span class="font-extrabold text-[11px] uppercase tracking-wider text-slate-800">ГОЛОВНЕ У РОЗМОВІ:</span>
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-            <div class="bg-slate-50 px-2 py-1.5 rounded-lg border border-slate-100 flex items-center gap-1.5">
-              <span>😊</span>
-              <span class="font-medium text-slate-700">Теплий контакт</span>
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+              <span class="text-amber-500 text-lg">★</span>
+              <span class="font-extrabold text-xs uppercase tracking-wider text-slate-900">ГОЛОВНЕ У РОЗМОВІ:</span>
             </div>
-            <div class="bg-slate-50 px-2 py-1.5 rounded-lg border border-slate-100 flex items-center gap-1.5">
-              <span>✅</span>
-              <span class="font-medium text-slate-700">Чіткі кроки</span>
-            </div>
-            <div class="bg-slate-50 px-2 py-1.5 rounded-lg border border-slate-100 flex items-center gap-1.5">
-              <span>❤️</span>
-              <span class="font-medium text-slate-700">Супровід</span>
-            </div>
-            <div class="bg-slate-50 px-2 py-1.5 rounded-lg border border-slate-100 flex items-center gap-1.5">
-              <span>📅</span>
-              <span class="font-medium text-slate-700">Фіксація в CRM</span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs flex-1">
+              <div class="flex items-center gap-2 text-slate-700 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                <span class="text-amber-500 text-sm">😊</span>
+                <span class="font-medium">Теплий контакт і турбота</span>
+              </div>
+              <div class="flex items-center gap-2 text-slate-700 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                <span class="text-emerald-500 text-sm">✅</span>
+                <span class="font-medium">Чітко пояснити наступні кроки</span>
+              </div>
+              <div class="flex items-center gap-2 text-slate-700 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                <span class="text-rose-500 text-sm">❤️</span>
+                <span class="font-medium">Підкреслювати супровід</span>
+              </div>
+              <div class="flex items-center gap-2 text-slate-700 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                <span class="text-blue-500 text-sm">📅</span>
+                <span class="font-medium">Фіксувати все в CRM</span>
+              </div>
             </div>
           </div>
         </div>
 
       </div>
 
-      <!-- RIGHT COLUMN: FIXED ALWAYS-VISIBLE LIVE TELEPROMPTER & CRM -->
-      <div class="lg:col-span-5 flex flex-col min-h-0 lg:overflow-y-auto custom-scrollbar space-y-3 pb-8">
+      <!-- ============================================================== -->
+      <!-- RIGHT AREA: PINNED LIVE TELEPROMPTER & CRM (ALWAYS VISIBLE!)     -->
+      <!-- ============================================================== -->
+      <aside class="w-full lg:w-[440px] xl:w-[470px] lg:fixed lg:top-[90px] lg:right-6 xl:right-10 lg:bottom-4 lg:z-30 overflow-y-auto custom-scrollbar flex flex-col gap-3 mt-6 lg:mt-0">
         
-        <!-- TELEPROMPTER CARD (HERO ELEMENT) -->
-        <div class="bg-white rounded-2xl border-2 border-indigo-500 shadow-lg overflow-hidden flex flex-col shrink-0">
+        <!-- TELEPROMPTER CARD -->
+        <div class="bg-white rounded-2xl border-2 border-indigo-500 shadow-xl overflow-hidden flex flex-col shrink-0">
           
           <!-- Prompter Top Header -->
-          <div class="bg-gradient-to-r from-indigo-600 to-violet-600 px-3.5 py-2 text-white flex items-center justify-between shrink-0">
+          <div class="bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2.5 text-white flex items-center justify-between shrink-0">
             <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
-              <span class="text-[11px] uppercase tracking-wider font-extrabold">СУФЛЕР: ЩО ГОВОРИТИ КЛІЄНТУ</span>
+              <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></div>
+              <span class="text-xs uppercase tracking-wider font-extrabold">СУФЛЕР: ЩО ГОВОРИТИ КЛІЄНТУ</span>
             </div>
-            <span id="promptStepIndicator" class="text-[11px] bg-white/20 px-2 py-0.5 rounded-full font-mono font-bold">Етап 1 / 8</span>
+            <span id="promptStepIndicator" class="text-xs bg-white/20 px-2 py-0.5 rounded-full font-mono font-bold">Етап 1 / 8</span>
           </div>
 
           <!-- Active Step Title & Sub-badge -->
-          <div class="px-3.5 py-2 bg-indigo-50/60 border-b border-indigo-100 flex items-center justify-between shrink-0">
+          <div class="px-4 py-2.5 bg-indigo-50/70 border-b border-indigo-100 flex items-center justify-between shrink-0">
             <div>
               <h4 id="promptTitle" class="text-sm font-bold text-slate-900 leading-tight">1. ПРИВІТАННЯ ТА ЗНАЙОМСТВО</h4>
-              <p id="promptGoal" class="text-[11px] text-slate-600 mt-0.5">Мета: представитися, перевірити зручність, задати теплий тон.</p>
+              <p id="promptGoal" class="text-xs text-slate-600 mt-0.5">Мета: представитися, перевірити зручність, задати теплий тон.</p>
             </div>
-            <span id="promptBranchBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 shrink-0">
+            <span id="promptBranchBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 shrink-0">
               Старт розмови
             </span>
           </div>
 
           <!-- SPEECH TEXT CONTENT (LARGE & READABLE) -->
-          <div class="p-3.5 space-y-2.5 bg-white">
+          <div class="p-4 space-y-3 bg-white">
             <div class="relative">
-              <div class="bg-slate-50 border border-slate-200/90 rounded-xl p-3 text-slate-800 text-xs sm:text-sm leading-relaxed shadow-inner">
-                <span class="text-indigo-400 text-xl font-serif select-none mr-1">&ldquo;</span>
-                <span id="promptSpokenText" class="text-slate-800 font-semibold whitespace-pre-line">
-                  Доброго дня, <span class="text-indigo-600 font-bold">[Олександр]</span>! Мене звати <span class="text-indigo-600 font-bold">[Олена]</span>, я менеджер сервіс-відділу Антишколи. Чи зручно вам зараз говорити?
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-800 text-sm leading-relaxed shadow-inner">
+                <span class="text-indigo-400 text-2xl font-serif select-none mr-1">&ldquo;</span>
+                <span id="promptSpokenText" class="text-slate-900 font-semibold whitespace-pre-line text-sm">
+                  Доброго дня, <span class="text-indigo-600 font-bold">[Олександр]</span>! Мене звати <span class="text-indigo-600 font-bold">[Олена]</span>, я ваш персональний сервіс-менеджер. Чи зручно вам зараз говорити?
                 </span>
               </div>
               
@@ -434,26 +449,26 @@
             </div>
 
             <!-- Hint for Manager -->
-            <div id="promptHintBox" class="p-2 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 flex items-start gap-1.5">
-              <svg class="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div id="promptHintBox" class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
+              <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <div id="promptHintText">
-                Говоріть спокійно, тепло та з усмішкою. Якщо клієнту незручно — фіксуйте час передзвону.
+                Говоріть спокійно, тепло та з усмішкою. Якщо клієнту незручно — фіксуйте точний час передзвону.
               </div>
             </div>
 
             <!-- Alternative Branches Inside Step -->
-            <div id="promptSubActionsContainer" class="pt-1.5 border-t border-slate-100 flex flex-wrap gap-1.5">
+            <div id="promptSubActionsContainer" class="pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">
               <!-- Dynamically populated buttons -->
             </div>
           </div>
 
           <!-- Step Navigation Bar -->
-          <div class="px-3.5 py-2 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
-            <button id="prevStepBtn" onclick="navigateStep(-1)" class="px-3 py-1 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition flex items-center gap-1 disabled:opacity-40">
+          <div class="px-4 py-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+            <button id="prevStepBtn" onclick="navigateStep(-1)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition flex items-center gap-1 disabled:opacity-40">
               &larr; Назад
             </button>
             <span id="stepCounterDot" class="text-xs text-slate-500 font-medium">Крок 1 з 8</span>
-            <button id="nextStepBtn" onclick="navigateStep(1)" class="px-4 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition flex items-center gap-1">
+            <button id="nextStepBtn" onclick="navigateStep(1)" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition flex items-center gap-1">
               Далі &rarr;
             </button>
           </div>
@@ -461,13 +476,13 @@
         </div>
 
         <!-- POST-CALL CHECKLIST & CRM ACTIONS -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-3 shrink-0">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-3.5 shrink-0">
           <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
             <div class="flex items-center gap-1.5">
               <div class="w-5 h-5 rounded-md bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
                 ✓
               </div>
-              <h4 class="font-bold text-slate-900 text-[11px] uppercase tracking-wide">ЧЕК-ЛІСТ ПІСЛЯ ДЗВІНКА (CRM)</h4>
+              <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wide">ЧЕК-ЛІСТ ПІСЛЯ ДЗВІНКА (CRM)</h4>
             </div>
             <span id="checklistProgress" class="text-xs font-mono font-bold text-indigo-600">0/5</span>
           </div>
@@ -475,43 +490,43 @@
           <div class="space-y-1.5 text-xs">
             <label class="flex items-start gap-2 p-1 rounded-lg hover:bg-slate-50 cursor-pointer">
               <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-              <span class="text-slate-700 text-[11px]">Перевести етап в CRM на <strong>«ИО Подбор тичера»</strong></span>
+              <span class="text-slate-700 text-xs">Перевести етап в CRM на <strong>«ИО Подбор тичера»</strong></span>
             </label>
             <label class="flex items-start gap-2 p-1 rounded-lg hover:bg-slate-50 cursor-pointer">
               <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-              <span class="text-slate-700 text-[11px]">Зафіксувати графік, дні, час та побажання</span>
+              <span class="text-slate-700 text-xs">Зафіксувати графік, дні, час та побажання у примітках</span>
             </label>
             <label class="flex items-start gap-2 p-1 rounded-lg hover:bg-slate-50 cursor-pointer">
               <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-              <span class="text-slate-700 text-[11px]">Статус по носію: згода (<strong>поза чергою</strong>) або відмова</span>
+              <span class="text-slate-700 text-xs">Статус по носію: згода (<strong>поза чергою</strong>) або відмова</span>
             </label>
             <label class="flex items-start gap-2 p-1 rounded-lg hover:bg-slate-50 cursor-pointer">
               <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-              <span class="text-slate-700 text-[11px]">Перевірити підключення чат-бота (Telegram/Viber)</span>
+              <span class="text-slate-700 text-xs">Перевірити підключення чат-бота (Telegram/Viber)</span>
             </label>
             <label class="flex items-start gap-2 p-1 rounded-lg hover:bg-slate-50 cursor-pointer">
               <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-              <span class="text-slate-700 text-[11px]">Надіслати привітальне SMS / повідомлення</span>
+              <span class="text-slate-700 text-xs">Надіслати привітальне SMS / повідомлення</span>
             </label>
           </div>
 
           <!-- Welcome SMS -->
-          <div class="mt-2.5 pt-2 border-t border-slate-100 bg-slate-50 p-2 rounded-xl">
+          <div class="mt-2.5 pt-2 border-t border-slate-100 bg-slate-50 p-2.5 rounded-xl">
             <div class="flex items-center justify-between mb-1">
-              <span class="font-bold text-[10px] text-slate-800">
+              <span class="font-bold text-[11px] text-slate-800">
                 💬 Шаблон вітального SMS:
               </span>
-              <button onclick="copyWelcomeSms()" class="text-[10px] text-indigo-600 font-bold hover:underline">
+              <button onclick="copyWelcomeSms()" class="text-[11px] text-indigo-600 font-bold hover:underline">
                 Скопіювати SMS
               </button>
             </div>
-            <p id="welcomeSmsPreview" class="text-[10px] text-slate-600 font-mono bg-white p-1.5 rounded border border-slate-200">
+            <p id="welcomeSmsPreview" class="text-[11px] text-slate-600 font-mono bg-white p-2 rounded border border-slate-200">
               Дякую за підключення чату! Я ваш персональний менеджер Олена. Підбираємо викладача (до 7 р.д.) — повідомимо тут. Пишіть — я завжди на зв'язку! Посилання на платформу: [link], База знань: [link]. Підтримка: 063 304 62 69
             </p>
           </div>
         </div>
 
-      </div>
+      </aside>
 
     </div>
   </main>
@@ -848,7 +863,7 @@
       });
     }
 
-    // SELECT STEP (WITH AUTO SCROLL OF LEFT CARD INTO VIEW)
+    // SELECT STEP
     function selectStep(stepId, branchKey = null, autoScroll = true) {
       currentStepId = stepId;
       const step = stepsData.find(s => s.id === stepId);
