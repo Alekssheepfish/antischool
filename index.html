@@ -400,57 +400,7 @@
 
         </div>
 
-        <!-- AUDIO CALL EXAMPLE BLOCK (FROM SCREENSHOT 6) -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              <span class="text-purple-600 text-lg">🎧</span>
-              <h4 class="font-bold text-xs uppercase tracking-wider text-slate-900">Приклад дзвінка по прийому у відділ</h4>
-            </div>
-            <span class="text-[11px] font-mono text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full font-semibold">
-              2026-07-14_10-56_380990034047_outgoing.mp3
-            </span>
-          </div>
 
-          <!-- Real HTML5 Audio Player -->
-          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2.5">
-            <audio id="realAudioPlayer" controls class="w-full h-11 rounded-lg" preload="metadata">
-              <source src="2026-07-14_10-56_380990034047_outgoing.mp3" type="audio/mpeg">
-              <source src="audio.mp3" type="audio/mpeg">
-              Ваш браузер не підтримує аудіо елемент.
-            </audio>
-
-            <!-- File Upload & Speech Synthesis Controls -->
-            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-200/80 text-xs">
-              
-              <!-- Speech Synthesis Voice Trainer Button -->
-              <button onclick="toggleVoiceSimulation()" id="voiceSimBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold transition shadow-xs">
-                <span id="voiceSimIcon">🎙️</span>
-                <span id="voiceSimText">Зіграти зразок діалогу (Голосовий тренажер)</span>
-              </button>
-
-              <!-- Upload local mp3 file button -->
-              <label class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-medium cursor-pointer transition shadow-2xs">
-                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                <span>Вибрати збережений mp3</span>
-                <input type="file" id="audioFileInput" accept="audio/*" onchange="handleAudioFileSelect(event)" class="hidden">
-              </label>
-            </div>
-
-            <!-- Live Voice Simulation Subtitle Banner -->
-            <div id="voiceDialogueBox" class="hidden p-3 rounded-xl bg-purple-50 border border-purple-200 text-xs text-purple-950 space-y-1">
-              <div class="flex items-center justify-between font-bold text-[11px] text-purple-800">
-                <span id="voiceSpeakerRole">Говорить Менеджер:</span>
-                <button onclick="stopVoiceSimulation()" class="text-rose-600 hover:underline">Зупинити ✕</button>
-              </div>
-              <p id="voiceSubtitleText" class="font-medium text-slate-900 italic text-xs leading-relaxed"></p>
-            </div>
-
-            <p class="text-[11px] text-slate-500 leading-snug">
-              💡 <strong>Як послухати оригінальний mp3:</strong> відкрийте сторінку уроку в кабінеті АнтиШколи, натисніть правою кнопкою миші на аудіоплеєр → <em>«Зберегти аудіо як...»</em> і виберіть збережений файл кнопкою вище або покладіть файл <code>2026-07-14_10-56_380990034047_outgoing.mp3</code> у папку проєкту. Також ви можете натиснути кнопку <em>«Зіграти зразок діалогу»</em>, щоб прослухати озвучку дзвінка прямо зараз!
-            </p>
-          </div>
-        </div>
 
       </div>
 
@@ -1132,96 +1082,7 @@
       document.getElementById("lessonDoneBadge").classList.add("hidden");
     }
 
-    // AUDIO & VOICE SIMULATION
-    let isVoiceSimRunning = false;
 
-    const sampleDialogue = [
-      { role: "Менеджер 👩‍💼", text: "Доброго дня, Олександре! Мене звати Олена, я менеджер сервіс-відділу Антишколи. Чи зручно вам зараз говорити?" },
-      { role: "Студент 👨‍🎓", text: "Так, доброго дня, зручно." },
-      { role: "Менеджер 👩‍💼", text: "Чудово, рада знайомству! Я буду супроводжувати вас протягом усього навчання. Бачу, що ви вже заповнили анкету: плануєте займатися у вівторок та четвер о 18:00, два рази на тиждень, вірно?" },
-      { role: "Студент 👨‍🎓", text: "Так, все правильно." },
-      { role: "Менеджер 👩‍💼", text: "Бачу, що ваш рекомендований рівень B1. З вашим рівнем гарний результат може дати навчання з англомовним викладачем. Ми можемо запропонувати такі заняття в межах вашого пакета без доплат. Що скажете?" },
-      { role: "Студент 👨‍🎓", text: "А якщо я не зрозумію або побоюсь говорити?" },
-      { role: "Менеджер 👩‍💼", text: "Наші викладачі мають великий досвід роботи зі студентами різних рівнів, а на платформі є вбудований переклад. А якщо заняття з носієм вам не сподобається — урок не буде списаний з балансу!" },
-      { role: "Студент 👨‍🎓", text: "Добре, тоді давайте спробуємо з носієм." },
-      { role: "Менеджер 👩‍💼", text: "Чудово! Зараз ви на етапі підбору викладача. Підбір триває в середньому від семи до чотирнадцяти днів. Як тільки все буде готово — надішлемо вам повідомлення в чат." },
-      { role: "Менеджер 👩‍💼", text: "І ще одна приємна новина! Щоб ви могли одразу зануритися в навчання, поки триває підбір, ми відкриваємо вам доступ до подарункового абонемента на один місяць! Це безлімітні розмовні клуби. Посилання на букінг я надішлю в чат-бот." },
-      { role: "Менеджер 👩‍💼", text: "Також важливе правило: скасувати заняття без списання можна не пізніше ніж за вісім годин. Після першого уроку я обов'язково зв'яжуся з вами дізнатися враження. Чи залишились у вас якісь запитання?" },
-      { role: "Студент 👨‍🎓", text: "Ні, все дуже зрозуміло, дякую!" },
-      { role: "Менеджер 👩‍💼", text: "Тоді дякую вам за розмову! Буду рада зробити ваше навчання максимально комфортним. Гарного вам дня!" }
-    ];
-
-    function toggleVoiceSimulation() {
-      if (isVoiceSimRunning) {
-        stopVoiceSimulation();
-      } else {
-        startVoiceSimulation();
-      }
-    }
-
-    function startVoiceSimulation() {
-      if (!('speechSynthesis' in window)) {
-        alert("Ваш браузер не підтримує функцію синтезу мовлення.");
-        return;
-      }
-      window.speechSynthesis.cancel();
-      isVoiceSimRunning = true;
-      document.getElementById("voiceSimText").textContent = "Зупинити озвучку";
-      document.getElementById("voiceSimIcon").textContent = "⏹️";
-      document.getElementById("voiceDialogueBox").classList.remove("hidden");
-
-      let phraseIdx = 0;
-
-      function speakNextPhrase() {
-        if (!isVoiceSimRunning || phraseIdx >= sampleDialogue.length) {
-          stopVoiceSimulation();
-          return;
-        }
-
-        const item = sampleDialogue[phraseIdx];
-        document.getElementById("voiceSpeakerRole").textContent = `Говорить ${item.role}:`;
-        document.getElementById("voiceSubtitleText").textContent = item.text;
-
-        const utterance = new SpeechSynthesisUtterance(item.text);
-        utterance.lang = "uk-UA";
-        utterance.rate = 1.0;
-        utterance.pitch = item.role.includes("Менеджер") ? 1.05 : 0.95;
-
-        utterance.onend = () => {
-          phraseIdx++;
-          setTimeout(speakNextPhrase, 600);
-        };
-        utterance.onerror = () => {
-          phraseIdx++;
-          setTimeout(speakNextPhrase, 400);
-        };
-
-        window.speechSynthesis.speak(utterance);
-      }
-
-      speakNextPhrase();
-    }
-
-    function stopVoiceSimulation() {
-      isVoiceSimRunning = false;
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-      document.getElementById("voiceSimText").textContent = "Зіграти зразок діалогу (Голосовий тренажер)";
-      document.getElementById("voiceSimIcon").textContent = "🎙️";
-      document.getElementById("voiceDialogueBox").classList.add("hidden");
-    }
-
-    function handleAudioFileSelect(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const audioPlayer = document.getElementById("realAudioPlayer");
-        const objectUrl = URL.createObjectURL(file);
-        audioPlayer.src = objectUrl;
-        audioPlayer.play().catch(e => console.log(e));
-        alert("Аудіофайл успішно завантажено в плеєр! Натисніть кнопку Play для прослуховування.");
-      }
-    }
 
     // VIEW TOGGLE (Cards vs Table)
     function switchView(mode) {
