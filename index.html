@@ -237,7 +237,7 @@
               </div>
               <span class="text-xs text-indigo-700 font-bold bg-indigo-50 px-2 py-0.5 rounded-md">Для B1 і вище</span>
             </div>
-            <p class="text-xs text-slate-600 mb-3">Пропонуємо англомовного викладача в межах пакета без доплат. Знімаємо страх.</p>
+            <p class="text-xs text-slate-600 mb-2.5">Пропонуємо англомовного викладача в межах пакета без доплат. Знімаємо страх.</p>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               <div onclick="event.stopPropagation(); setTeacherBranch('b1_offer')" id="subBranch-b1_offer" class="badge-chip p-2.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100/70">
@@ -248,7 +248,21 @@
                 <span class="font-bold text-amber-900 flex items-center gap-1 mb-0.5">
                   ХВИЛЮЄТЬСЯ / СТРАХ?
                 </span>
-                <p class="text-[11px] text-amber-800">Переклад на платформі. <strong>Не сподобається — урок не списується!</strong></p>
+                <p class="text-[11px] text-amber-800">Переклад слів на платформі. Досвідчені викладачі.</p>
+              </div>
+
+              <!-- Prominent Guarantee Badge (Clickable into Teleprompter) -->
+              <div onclick="event.stopPropagation(); setTeacherBranch('still_doubt')" id="subBranch-still_doubt" class="badge-chip col-span-1 sm:col-span-2 p-2.5 rounded-xl border-2 border-emerald-300 bg-emerald-50 hover:bg-emerald-100/80 transition flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">🛡️</span>
+                  <div>
+                    <span class="font-extrabold text-emerald-950 block text-xs">ГАРАНТІЯ БЕЗПЕКИ: УРОК НЕ СПИСУЄТЬСЯ!</span>
+                    <p class="text-[11px] text-emerald-800 font-medium">«Якщо заняття з носієм вам не сподобається, урок не буде списаний з балансу»</p>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-emerald-800 bg-white px-2 py-1 rounded-md border border-emerald-300 shrink-0 shadow-2xs">
+                  Скрипт ↗
+                </span>
               </div>
             </div>
           </div>
@@ -675,6 +689,7 @@
             subButtons: [
               { label: "👍 Студент погоджується", branchKey: "accepted" },
               { label: "🤔 Хвилюється, що не зрозуміє", branchKey: "worried" },
+              { label: "🛡️ Гарантія (Урок не списується)", branchKey: "still_doubt" },
               { label: "Рівень нижче B1", branchKey: "below_b1" }
             ]
           },
